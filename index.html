@@ -19,7 +19,7 @@
     button {
       font-size: 20px;
       padding: 10px 20px;
-      margin-top: 20px;
+      margin-top: 15px;
       cursor: pointer;
     }
 
@@ -27,6 +27,12 @@
       margin-top: 40px;
       font-size: 22px;
       color: darkblue;
+    }
+
+    input {
+      font-size: 18px;
+      padding: 8px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -40,14 +46,36 @@
   <div id="gameBox"></div>
 
   <script>
+    let questions = [
+      {
+        q: "איזו מילה מתחילה ב־נ ומסתיימת ב־גה?",
+        a: "נוסטלגיה"
+      },
+      {
+        q: "מה המילה ההפוכה של יום?",
+        a: "לילה"
+      },
+      {
+        q: "איך קוראים למה שאנחנו כותבים בו קוד?",
+        a: "קוד"
+      }
+    ];
+
+    let current = 0;
+
     function startGame() {
+      current = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
       document.getElementById("gameBox").innerHTML = `
-        <p>🎉 המשחק התחיל!</p>
-        <p>שאלה 1:</p>
-        <p>איזו מילה מתחילה ב־נ ומסתיימת ב־גה?</p>
+        <p>שאלה ${current + 1}:</p>
+        <p>${questions[current].q}</p>
 
         <input id="answer" placeholder="כתבי תשובה">
         <br><br>
+
         <button onclick="checkAnswer()">בדיקת תשובה</button>
 
         <div id="result"></div>
@@ -57,8 +85,20 @@
     function checkAnswer() {
       let ans = document.getElementById("answer").value;
 
-      if (ans.trim() === "נוסטלגיה") {
-        document.getElementById("result").innerHTML = "✔ תשובה נכונה!";
+      if (ans.trim() === questions[current].a) {
+        document.getElementById("result").innerHTML = "✔ נכון!";
+
+        setTimeout(() => {
+          current++;
+
+          if (current < questions.length) {
+            showQuestion();
+          } else {
+            document.getElementById("gameBox").innerHTML =
+              "🎉 סיימת את כל המשחק! כל הכבוד!";
+          }
+        }, 800);
+
       } else {
         document.getElementById("result").innerHTML = "✖ לא נכון, נסי שוב";
       }
