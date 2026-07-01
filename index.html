@@ -2,128 +2,128 @@
 <html lang="he">
 <head>
 <meta charset="UTF-8">
-<title>משחק נוסטלגי</title>
+<title>שעשועון נוסטלגי</title>
 
 <style>
-body {
-    margin: 0;
+body{
+    margin:0;
     font-family: Arial;
     direction: rtl;
-    text-align: center;
-    background: linear-gradient(135deg, #00c2c2, #ffb347, #ffe66d);
-    overflow-x: hidden;
+    text-align:center;
+    background: linear-gradient(135deg,#00c2c2,#ffb347,#ffe66d);
+}
+
+/* מסך פתיחה */
+#startScreen{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:10;
+}
+
+button{
+    padding:15px 25px;
+    margin:10px;
+    font-size:18px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
 }
 
 /* כרטיס */
-.card {
-    background: white;
-    max-width: 750px;
-    margin: 40px auto;
-    padding: 40px;
-    border-radius: 25px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    transition: 0.4s;
+.card{
+    max-width:750px;
+    margin:30px auto;
+    background:white;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
 /* טקסט */
-.word {
-    font-size: 40px;
-    font-weight: bold;
-}
-
-.meaning {
-    margin-top: 20px;
-    font-size: 22px;
-    display: none;
-}
+.word{font-size:40px;font-weight:bold;}
+.meaning{display:none;font-size:22px;margin-top:20px;}
 
 /* כפתורים */
-button {
-    font-size: 18px;
-    padding: 15px 25px;
-    margin: 10px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: 0.3s;
+.next{background:#00c2c2;color:white;}
+.show{background:#ffb347;}
+.wrong{background:#ff4d4d;color:white;}
+.correct{background:#4CAF50;color:white;}
+
+/* ניקוד */
+.scoreboard{
+    font-size:20px;
+    margin:10px;
 }
 
-.next { background: #00c2c2; color: white; }
-.prev { background: #ffb347; }
-.show { background: #ffe66d; }
-
-/* תשובה נכונה */
-.correct {
-    border: 5px solid green;
-    animation: pop 0.5s;
-}
-
-/* תשובה שגויה */
-.wrong {
-    border: 5px solid red;
-    animation: shake 0.4s;
-}
-
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    50% { transform: translateX(10px); }
-    100% { transform: translateX(0); }
-}
-
-@keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-/* קונפטי */
-.confetti {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    background: red;
-    top: -10px;
-    animation: fall 3s linear;
-}
-
-@keyframes fall {
-    to { transform: translateY(100vh) rotate(720deg); }
+/* טיימר */
+#timer{
+    font-size:22px;
+    margin:10px;
+    font-weight:bold;
 }
 
 /* פינת נוסטלגיה */
-.nostalgia {
-    display: none;
-    background: rgba(255,255,255,0.95);
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 600px;
-    border-radius: 20px;
+#nostalgia{
+    display:none;
+    background:white;
+    margin:20px auto;
+    max-width:600px;
+    padding:15px;
+    border-radius:15px;
+}
+
+/* קונפטי */
+.confetti{
+    position:fixed;
+    width:10px;
+    height:10px;
+    top:-10px;
+    animation:fall 3s linear;
+}
+@keyframes fall{
+    to{transform:translateY(100vh) rotate(720deg);}
 }
 </style>
 </head>
 
 <body>
 
-<h1>🎲 משחק נוסטלגי</h1>
+<!-- START -->
+<div id="startScreen">
+    <h1>🎤 שעשועון נוסטלגי</h1>
+    <p>לחצו כדי להתחיל</p>
+    <button onclick="startGame()">▶ התחלה</button>
+</div>
 
-<div class="card" id="card">
+<div class="scoreboard">
+🏆 קבוצה A: <span id="a">0</span> |
+🏆 קבוצה B: <span id="b">0</span>
+</div>
+
+<div id="timer">⏱️ 10</div>
+
+<div class="card">
     <div class="word" id="word"></div>
     <div class="meaning" id="meaning"></div>
 
-    <button class="prev" onclick="prevQ()">⬅</button>
-    <button class="show" onclick="toggle()">הצג פירוש</button>
-    <button class="next" onclick="nextQ()">➡</button>
+    <button class="show" onclick="showAnswer()">הצג פירוש</button>
+    <button class="correct" onclick="score('A')">קבוצה A צודקת</button>
+    <button class="wrong" onclick="score('B')">קבוצה B צודקת</button>
+    <button class="next" onclick="next()">שאלה הבאה ➡</button>
 </div>
 
-<div class="nostalgia" id="nostalgia">
-📻 רדיו טרנזיסטור • ☎ טלפון חוגה • 🚗 סוסיתא • 📺 שחור־לבן • 💿 פטיפון • 🛵 וספה • 🥤 גזוז • 🍦 ארטיק  
-<br><br>
-"אם זיהית את זה בלי לחשוב – כנראה שהילדות שלך הייתה בשחור־לבן אבל עם הרבה צבע בלב 💛"
-</div>
+<div id="nostalgia"></div>
 
 <script>
-const data = [
+
+const data=[
 ["חנטריש","שטויות"],
 ["פוילישטיק","תעלול"],
 ["סמטוחה","בלגן"],
@@ -156,52 +156,80 @@ const data = [
 ["אוי ויי","צער"]
 ];
 
-let i = 0;
+let i=0;
+let scoreA=0;
+let scoreB=0;
+let time=10;
+let timer;
+
+function startGame(){
+    document.getElementById("startScreen").style.display="none";
+    render();
+    startTimer();
+}
 
 function render(){
-    document.getElementById("word").innerText = data[i][0];
-    document.getElementById("meaning").innerText = data[i][1];
-    document.getElementById("meaning").style.display = "none";
+    document.getElementById("word").innerText=data[i][0];
+    document.getElementById("meaning").innerText=data[i][1];
+    document.getElementById("meaning").style.display="none";
 
-    if(i>0 && i%5===0){
-        document.getElementById("nostalgia").style.display = "block";
+    if(i%5===0 && i!==0){
+        document.getElementById("nostalgia").style.display="block";
+        document.getElementById("nostalgia").innerHTML=
+        "📻 נוסטלגיה: רדיו טרנזיסטור • טלפון חוגה • סוסיתא • פטיפון<br><br>" +
+        "💛 אם זיהית את זה בלי לחשוב – גדלת בעידן קסום!";
     } else {
-        document.getElementById("nostalgia").style.display = "none";
+        document.getElementById("nostalgia").style.display="none";
     }
 }
 
-function nextQ(){
-    i = (i+1)%data.length;
+function next(){
+    i=(i+1)%data.length;
+    resetTimer();
     render();
 }
 
-function prevQ(){
-    i = (i-1+data.length)%data.length;
-    render();
+function showAnswer(){
+    document.getElementById("meaning").style.display="block";
+    correctAnim();
 }
 
-function toggle(){
-    let m = document.getElementById("meaning");
-    let card = document.getElementById("card");
-
-    if(m.style.display==="block"){
-        m.style.display="none";
+function score(team){
+    if(team==="A"){
+        scoreA++;
+        document.getElementById("a").innerText=scoreA;
     } else {
-        m.style.display="block";
-        correct();
+        scoreB++;
+        document.getElementById("b").innerText=scoreB;
     }
-}
-
-function correct(){
-    const card = document.getElementById("card");
-    card.classList.add("correct");
     confetti();
-    setTimeout(()=>card.classList.remove("correct"),1000);
+    correctAnim();
+}
+
+function correctAnim(){
+    document.querySelector(".card").style.border="5px solid green";
+    setTimeout(()=>document.querySelector(".card").style.border="none",800);
+}
+
+function startTimer(){
+    timer=setInterval(()=>{
+        time--;
+        document.getElementById("timer").innerText="⏱️ "+time;
+
+        if(time<=0){
+            next();
+        }
+    },1000);
+}
+
+function resetTimer(){
+    time=10;
+    document.getElementById("timer").innerText="⏱️ 10";
 }
 
 function confetti(){
-    for(let i=0;i<30;i++){
-        let c = document.createElement("div");
+    for(let j=0;j<25;j++){
+        let c=document.createElement("div");
         c.className="confetti";
         c.style.left=Math.random()*100+"vw";
         c.style.background=["red","blue","yellow","green"][Math.floor(Math.random()*4)];
@@ -211,6 +239,7 @@ function confetti(){
 }
 
 render();
+
 </script>
 
 </body>
