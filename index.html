@@ -2,7 +2,7 @@
 <html lang="he">
 <head>
 <meta charset="UTF-8">
-<title>שעשועון נוסטלגי - מופע מלא</title>
+<title>שעשועון נוסטלגי - מופע אלבום</title>
 
 <style>
 body{
@@ -14,41 +14,86 @@ body{
     overflow:hidden;
 }
 
-/* מנחה */
-.host{
+/* מסך פתיחה אלבום */
+#intro{
     position:fixed;
-    top:10px;
-    right:10px;
-    background:white;
-    padding:10px 15px;
-    border-radius:15px;
-    box-shadow:0 5px 10px rgba(0,0,0,0.2);
-    font-size:16px;
-}
-
-/* קהל */
-#audience{
-    position:fixed;
-    bottom:10px;
     width:100%;
-    font-size:30px;
+    height:100%;
+    background:#222;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    z-index:10;
 }
 
-/* כרטיס */
+/* אלבום */
+.album{
+    width:220px;
+    height:160px;
+    background:#8b5e3c;
+    border-radius:10px;
+    position:relative;
+    box-shadow:0 10px 20px rgba(0,0,0,0.4);
+    animation: openAlbum 2s forwards;
+}
+
+/* דפי אלבום */
+.album:before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:#f5f0e6;
+    border-radius:10px;
+    transform-origin:left;
+    animation: openPages 2s forwards;
+}
+
+@keyframes openAlbum{
+    0%{transform:scale(1);}
+    100%{transform:scale(1.1);}
+}
+
+@keyframes openPages{
+    0%{transform:rotateY(0deg);}
+    100%{transform:rotateY(-120deg);}
+}
+
+/* דמויות */
+.family{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:50px;
+    opacity:0;
+    animation: popOut 2s forwards 1.5s;
+}
+
+@keyframes popOut{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(0.5);}
+    100%{opacity:1; transform:translate(-50%,-180%) scale(1.2);}
+}
+
+/* משחק */
+#game{
+    display:none;
+}
+
 .card{
     max-width:800px;
-    margin:80px auto;
+    margin:30px auto;
     background:white;
     padding:40px;
     border-radius:25px;
     box-shadow:0 10px 25px rgba(0,0,0,0.3);
-    transition:0.3s;
 }
 
 .word{font-size:50px;font-weight:bold;}
 .meaning{display:none;font-size:22px;margin-top:20px;}
 
-/* כפתורים */
 button{
     padding:15px 25px;
     margin:10px;
@@ -58,27 +103,10 @@ button{
     cursor:pointer;
 }
 
-.next{background:#00c2c2;color:white;}
 .show{background:#ffb347;}
+.next{background:#00c2c2;color:white;}
 .good{background:#4CAF50;color:white;}
 .bad{background:#ff4d4d;color:white;}
-
-/* אפקטים */
-.correctFlash{animation:flashGreen 0.5s;}
-.wrongShake{animation:shake 0.5s;}
-
-@keyframes flashGreen{
-    0%{background:white;}
-    50%{background:#b6ffb6;}
-    100%{background:white;}
-}
-
-@keyframes shake{
-    0%{transform:translateX(0);}
-    25%{transform:translateX(-10px);}
-    50%{transform:translateX(10px);}
-    100%{transform:translateX(0);}
-}
 
 /* קונפטי */
 .confetti{
@@ -96,7 +124,7 @@ button{
 /* כוכבים */
 .star{
     position:fixed;
-    font-size:20px;
+    font-size:18px;
     animation:fallStar 2s linear;
 }
 
@@ -108,51 +136,35 @@ button{
 
 <body>
 
-<div class="host" id="host">🎤 המנחה: מוכנים לשאלה הבאה!</div>
-<div id="audience">👏👏👏👏👏</div>
+<!-- INTRO -->
+<div id="intro">
+    <h1>📖 אלבום הזיכרונות נפתח...</h1>
+    <div class="album"></div>
+
+    <div class="family">
+        👨‍🦳 👵 👨‍👩‍👧‍👦
+    </div>
+
+    <p style="margin-top:30px;">🎬 רגע של נוסטלגיה...</p>
+</div>
+
+<!-- GAME -->
+<div id="game">
 
 <div class="card" id="card">
     <div class="word" id="word"></div>
     <div class="meaning" id="meaning"></div>
 
     <button class="show" onclick="show()">הצג פירוש</button>
-    <button class="good" onclick="correct()">נכון ✔</button>
-    <button class="bad" onclick="wrong()">שגוי ✖</button>
+    <button class="good" onclick="good()">נכון ✔</button>
+    <button class="bad" onclick="bad()">שגוי ✖</button>
     <button class="next" onclick="next()">שאלה הבאה ➡</button>
+</div>
+
 </div>
 
 <script>
 
-/* 🎵 צלילים */
-function sound(type){
-    let ctx = new (window.AudioContext || window.webkitAudioContext)();
-    let o = ctx.createOscillator();
-    o.connect(ctx.destination);
-
-    if(type==="good"){
-        o.frequency.value=700;
-    }else{
-        o.frequency.value=200;
-    }
-
-    o.start();
-    setTimeout(()=>o.stop(),200);
-}
-
-/* 🎤 דמויות */
-const hosts=[
-"🎤 המנחה: וואו איזו מילה!",
-"🎤 המנחה: מי זוכר את זה?",
-"🎤 המנחה: נוסטלגיה באוויר!",
-"🎤 המנחה: בום של זיכרון!"
-];
-
-function randomHost(){
-    document.getElementById("host").innerText=
-    hosts[Math.floor(Math.random()*hosts.length)];
-}
-
-/* נתונים */
 const data=[
 ["חנטריש","שטויות"],
 ["פוילישטיק","תעלול"],
@@ -188,43 +200,64 @@ const data=[
 
 let i=0;
 
+/* התחלת משחק אחרי אלבום */
+setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+    document.getElementById("game").style.display="block";
+    render();
+    introSound();
+},3500);
+
+/* מוזיקת פתיחה */
+function introSound(){
+    let ctx=new (window.AudioContext||window.webkitAudioContext)();
+    let o=ctx.createOscillator();
+    o.frequency.value=520;
+    o.connect(ctx.destination);
+    o.start();
+    setTimeout(()=>o.stop(),600);
+}
+
+/* רנדר */
 function render(){
     document.getElementById("word").innerText=data[i][0];
     document.getElementById("meaning").innerText=data[i][1];
     document.getElementById("meaning").style.display="none";
-    randomHost();
 }
 
+/* הצג תשובה */
 function show(){
     document.getElementById("meaning").style.display="block";
 }
 
-function correct(){
-    sound("good");
+/* נכון */
+function good(){
     flash(true);
     confetti();
     stars();
 }
 
-function wrong(){
-    sound("bad");
+/* שגוי */
+function bad(){
     flash(false);
 }
 
-function flash(ok){
-    let c=document.getElementById("card");
-    c.classList.add(ok?"correctFlash":"wrongShake");
-    setTimeout(()=>c.classList.remove("correctFlash","wrongShake"),500);
-}
-
+/* מעבר */
 function next(){
     i=(i+1)%data.length;
     render();
 }
 
-/* 🎊 קונפטי */
+/* פלאש */
+function flash(ok){
+    let c=document.getElementById("card");
+    c.style.border=ok?"5px solid green":"5px solid red";
+    setTimeout(()=>c.style.border="none",500);
+}
+
+/* קונפטי */
 function confetti(){
-    for(let j=0;j<30;j++){
+    for(let j=0;j<25;j++){
         let c=document.createElement("div");
         c.className="confetti";
         c.style.left=Math.random()*100+"vw";
@@ -234,7 +267,7 @@ function confetti(){
     }
 }
 
-/* ⭐ כוכבים */
+/* כוכבים */
 function stars(){
     for(let j=0;j<15;j++){
         let s=document.createElement("div");
@@ -245,20 +278,6 @@ function stars(){
         setTimeout(()=>s.remove(),2000);
     }
 }
-
-/* 🎵 מוזיקת פתיחה */
-function introSound(){
-    let ctx=new (window.AudioContext||window.webkitAudioContext)();
-    let o=ctx.createOscillator();
-    o.type="square";
-    o.frequency.value=440;
-    o.connect(ctx.destination);
-    o.start();
-    setTimeout(()=>o.stop(),500);
-}
-
-introSound();
-render();
 
 </script>
 
