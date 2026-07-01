@@ -17,16 +17,22 @@
     }
 
     button {
-      font-size: 22px;
-      padding: 12px 25px;
+      font-size: 20px;
+      padding: 10px 20px;
       margin-top: 20px;
       cursor: pointer;
     }
 
     #gameBox {
       margin-top: 40px;
-      font-size: 20px;
+      font-size: 22px;
       color: darkblue;
+    }
+
+    input {
+      font-size: 18px;
+      padding: 8px;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -41,8 +47,26 @@
 
   <script>
     function startGame() {
-      document.getElementById("gameBox").innerHTML =
-        "המשחק התחיל 🎉<br>שאלה ראשונה תעלה בקרוב...";
+      alert("המשחק מתחיל! 🎉");
+
+      document.getElementById("gameBox").innerHTML = `
+        <p>שאלה 1:</p>
+        <p>מה המילה שמתחילה ב־נ ומסתיימת ב־גה?</p>
+        <input id="answer" placeholder="כתבי תשובה">
+        <br><br>
+        <button onclick="checkAnswer()">בדקי תשובה</button>
+        <div id="result"></div>
+      `;
+    }
+
+    function checkAnswer() {
+      let ans = document.getElementById("answer").value;
+
+      if (ans.trim() === "נוסטלגיה") {
+        document.getElementById("result").innerHTML = "✔ תשובה נכונה!";
+      } else {
+        document.getElementById("result").innerHTML = "✖ לא נכון, נסי שוב";
+      }
     }
   </script>
 
