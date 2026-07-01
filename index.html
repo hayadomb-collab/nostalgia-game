@@ -1,109 +1,165 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>משחק נוסטלגי</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      direction: rtl;
-      background: #f5f5f5;
-      padding-top: 80px;
-    }
+<meta charset="UTF-8">
+<title>משחק נוסטלגי - מילים</title>
 
-    h1 {
-      color: #222;
-    }
+<style>
+body {
+    font-family: Arial;
+    direction: rtl;
+    background: #f6f1e7;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
 
-    button {
-      font-size: 20px;
-      padding: 10px 20px;
-      margin-top: 15px;
-      cursor: pointer;
-    }
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 30px;
+}
 
-    #gameBox {
-      margin-top: 40px;
-      font-size: 22px;
-      color: darkblue;
-    }
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: opacity 0.4s ease;
+    min-height: 200px;
+}
 
-    input {
-      font-size: 18px;
-      padding: 8px;
-      margin-top: 10px;
-    }
-  </style>
+.word {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.meaning {
+    font-size: 20px;
+    color: #444;
+    display: none;
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.next { background: #4CAF50; color: white; }
+.prev { background: #2196F3; color: white; }
+.show { background: #FF9800; color: white; }
+
+.fade {
+    opacity: 0;
+}
+</style>
 </head>
 
 <body>
 
-  <h1>🎮 משחק המילים הנוסטלגי</h1>
+<div class="container">
+    <h1>🎲 משחק מילים נוסטלגי</h1>
 
-  <button onclick="startGame()">התחילי משחק</button>
+    <div id="card" class="card">
+        <div id="word" class="word"></div>
+        <div id="meaning" class="meaning"></div>
+    </div>
 
-  <div id="gameBox"></div>
+    <div>
+        <button class="prev" onclick="prevWord()">⬅ הקודם</button>
+        <button class="show" onclick="toggleMeaning()">הצג פירוש</button>
+        <button class="next" onclick="nextWord()">הבא ➡</button>
+    </div>
+</div>
 
-  <script>
-    let questions = [
-      {
-        q: "איזו מילה מתחילה ב־נ ומסתיימת ב־גה?",
-        a: "נוסטלגיה"
-      },
-      {
-        q: "מה המילה ההפוכה של יום?",
-        a: "לילה"
-      },
-      {
-        q: "איך קוראים למה שאנחנו כותבים בו קוד?",
-        a: "קוד"
-      }
-    ];
+<script>
+const words = [
+{w:"צ'וּפָּר", m:"קיבל הטבה או פינוק"},
+{w:"גּוֹרְנִישְׁט", m:"כלום ושום דבר"},
+{w:"בַּלֶבַּיִת", m:"בעל הבית, האחראי"},
+{w:"בַּלַגָּן", m:"אי־סדר גדול"},
+{w:"חָפִיף", m:"לא רציני, נעשה בלי השקעה"},
+{w:"קָאקָמַייקָה", m:"עבודה גרועה או דבר עלוב"},
+{w:"פּוּץ־מוֹיְיחַ", m:"שוטה, חסר שכל"},
+{w:"בְּרוֹיז", m:"כועס או רגוז"},
+{w:"שְׁלֶפּ", m:"סחיבה או מאמץ מיותר"},
+{w:"צָ'אלַמֶר", m:"אדם מגושם או חסר תחכום"},
+{w:"שָׁאפָה", m:"יפה מאוד! כל הכבוד!"},
+{w:"חַנְטָרִישׁ", m:"שטויות, דברי הבל"},
+{w:"פּוֹיְילִישְׁטִיק", m:"תעלול או טריק"},
+{w:"בּוּבֶּה מַיְיסֶעס", m:"סיפורי סבתא"},
+{w:"נֶבֶךְ", m:"מסכן"},
+{w:"קְלֶפְּטָה", m:"אישה נרגנת"},
+{w:"סַמְטוּכָה", m:"בלגן גדול"},
+{w:"חוֹלֵירָה", m:"אדם מעצבן"},
+{w:"בָּרוּךְ", m:"הסתבכות"},
+{w:"זַבֶּנְג", m:"מכה פתאומית"},
+{w:"סַבָּבָּה", m:"מצוין"},
+{w:"פְּרָאיֶיר", m:"אדם שקל לנצל אותו"},
+{w:"לַעֲשׂוֹת רוּחַ", m:"להשוויץ"},
+{w:"הִתְבַּרְבֵּר", m:"הסתבך"},
+{w:"יָאלְלָה", m:"קדימה"},
+{w:"לַפְלֵף", m:"חסר ביטחון"},
+{w:"פַּדִּיחָה", m:"מבוכה"},
+{w:"חַרְטְטָן", m:"ממציא סיפורים"},
+{w:"קִשְׁקוּשׁ בַּלָּבוּשׁ", m:"שטויות"},
+{w:"בּוֹמְבָּה", m:"מרשים"},
+{w:"דָּאוִין", m:"השווצה"},
+{w:"חַאפְלָה", m:"מסיבה"},
+{w:"וָאזוּוָאז", m:"פטפטן"},
+{w:"טַמְבֶּל", m:"טיפש"},
+{w:"בַּטְלָן", m:"לא עובד"},
+{w:"שְׁנוֹרֶר", m:"מבקש טובות"},
+{w:"שְׁמוֹנְצֶס", m:"שטויות"},
+{w:"שַׁיְיגֶץ", m:"שובב"},
+{w:"מֶענְטְשׁ", m:"אדם טוב"},
+{w:"אוֹי וֵוי", m:"קריאת צער"}
+];
 
-    let current = 0;
+let index = 0;
 
-    function startGame() {
-      current = 0;
-      showQuestion();
-    }
+function render() {
+    document.getElementById("word").innerText = words[index].w;
+    document.getElementById("meaning").innerText = words[index].m;
+    document.getElementById("meaning").style.display = "none";
+}
 
-    function showQuestion() {
-      document.getElementById("gameBox").innerHTML = `
-        <p>שאלה ${current + 1}:</p>
-        <p>${questions[current].q}</p>
+function nextWord() {
+    fade(() => {
+        index = (index + 1) % words.length;
+        render();
+    });
+}
 
-        <input id="answer" placeholder="כתבי תשובה">
-        <br><br>
+function prevWord() {
+    fade(() => {
+        index = (index - 1 + words.length) % words.length;
+        render();
+    });
+}
 
-        <button onclick="checkAnswer()">בדיקת תשובה</button>
+function toggleMeaning() {
+    const m = document.getElementById("meaning");
+    m.style.display = (m.style.display === "none") ? "block" : "none";
+}
 
-        <div id="result"></div>
-      `;
-    }
+function fade(callback) {
+    const card = document.getElementById("card");
+    card.classList.add("fade");
+    setTimeout(() => {
+        callback();
+        card.classList.remove("fade");
+    }, 300);
+}
 
-    function checkAnswer() {
-      let ans = document.getElementById("answer").value;
-
-      if (ans.trim() === questions[current].a) {
-        document.getElementById("result").innerHTML = "✔ נכון!";
-
-        setTimeout(() => {
-          current++;
-
-          if (current < questions.length) {
-            showQuestion();
-          } else {
-            document.getElementById("gameBox").innerHTML =
-              "🎉 סיימת את כל המשחק! כל הכבוד!";
-          }
-        }, 800);
-
-      } else {
-        document.getElementById("result").innerHTML = "✖ לא נכון, נסי שוב";
-      }
-    }
-  </script>
+render();
+</script>
 
 </body>
 </html>
