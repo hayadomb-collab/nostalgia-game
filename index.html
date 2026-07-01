@@ -28,12 +28,6 @@
       font-size: 22px;
       color: darkblue;
     }
-
-    input {
-      font-size: 18px;
-      padding: 8px;
-      margin-top: 10px;
-    }
   </style>
 </head>
 
@@ -48,11 +42,14 @@
   <script>
     function startGame() {
       document.getElementById("gameBox").innerHTML = `
+        <p>🎉 המשחק התחיל!</p>
         <p>שאלה 1:</p>
-        <p>מה המילה שמתחילה ב־נ ומסתיימת ב־גה?</p>
+        <p>איזו מילה מתחילה ב־נ ומסתיימת ב־גה?</p>
+
         <input id="answer" placeholder="כתבי תשובה">
         <br><br>
-        <button onclick="checkAnswer()">בדקי תשובה</button>
+        <button onclick="checkAnswer()">בדיקת תשובה</button>
+
         <div id="result"></div>
       `;
     }
