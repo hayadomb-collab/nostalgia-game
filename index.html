@@ -7,20 +7,26 @@
     body {
       font-family: Arial;
       text-align: center;
-      background: #f7f7f7;
       direction: rtl;
+      background: #f5f5f5;
       padding-top: 80px;
     }
 
     h1 {
-      color: #333;
+      color: #222;
     }
 
     button {
-      font-size: 20px;
-      padding: 10px 20px;
+      font-size: 22px;
+      padding: 12px 25px;
       margin-top: 20px;
       cursor: pointer;
+    }
+
+    #gameBox {
+      margin-top: 40px;
+      font-size: 20px;
+      color: darkblue;
     }
   </style>
 </head>
@@ -29,13 +35,14 @@
 
   <h1>🎮 משחק המילים הנוסטלגי</h1>
 
-  <p>ברוכה הבאה למשחק!</p>
-
   <button onclick="startGame()">התחילי משחק</button>
+
+  <div id="gameBox"></div>
 
   <script>
     function startGame() {
-      alert("המשחק מתחיל! 🎉");
+      document.getElementById("gameBox").innerHTML =
+        "המשחק התחיל 🎉<br>שאלה ראשונה תעלה בקרוב...";
     }
   </script>
 
