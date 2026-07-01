@@ -13,70 +13,78 @@ body{
     background: linear-gradient(135deg,#00c2c2,#ffb347,#ffe66d);
 }
 
-/* מסך פתיחה */
-#startScreen{
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.8);
+/* מסכים */
+.screen{
+    display:none;
+    padding:30px;
+}
+
+.active{
+    display:block;
+}
+
+/* פתיחה וסיום */
+#startScreen, #endScreen{
     color:white;
+    height:100vh;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    z-index:10;
+    background: rgba(0,0,0,0.7);
 }
 
-button{
-    padding:15px 25px;
-    margin:10px;
-    font-size:18px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-}
+h1{font-size:50px}
 
-/* כרטיס */
+/* כרטיס שאלה */
 .card{
-    max-width:750px;
+    max-width:800px;
     margin:30px auto;
     background:white;
-    padding:35px;
+    padding:40px;
     border-radius:25px;
     box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
-/* טקסט */
-.word{font-size:40px;font-weight:bold;}
-.meaning{display:none;font-size:22px;margin-top:20px;}
+.word{font-size:48px;font-weight:bold;}
+.meaning{display:none;font-size:24px;margin-top:20px;}
 
 /* כפתורים */
-.next{background:#00c2c2;color:white;}
+button{
+    padding:15px 25px;
+    margin:10px;
+    border:none;
+    border-radius:15px;
+    font-size:18px;
+    cursor:pointer;
+}
+
 .show{background:#ffb347;}
-.wrong{background:#ff4d4d;color:white;}
-.correct{background:#4CAF50;color:white;}
+.next{background:#00c2c2;color:white;}
+.aBtn{background:#4CAF50;color:white;}
+.bBtn{background:#ff4d4d;color:white;}
 
 /* ניקוד */
 .scoreboard{
-    font-size:20px;
-    margin:10px;
+    font-size:22px;
+    margin-top:10px;
 }
 
 /* טיימר */
 #timer{
-    font-size:22px;
-    margin:10px;
+    font-size:26px;
     font-weight:bold;
+    margin:10px;
 }
 
-/* פינת נוסטלגיה */
+/* נוסטלגיה */
 #nostalgia{
     display:none;
     background:white;
-    margin:20px auto;
-    max-width:600px;
     padding:15px;
     border-radius:15px;
+    margin:20px auto;
+    max-width:600px;
 }
 
 /* קונפטי */
@@ -87,6 +95,7 @@ button{
     top:-10px;
     animation:fall 3s linear;
 }
+
 @keyframes fall{
     to{transform:translateY(100vh) rotate(720deg);}
 }
@@ -95,35 +104,46 @@ button{
 
 <body>
 
-<!-- START -->
-<div id="startScreen">
-    <h1>🎤 שעשועון נוסטלגי</h1>
-    <p>לחצו כדי להתחיל</p>
-    <button onclick="startGame()">▶ התחלה</button>
+<!-- פתיחה -->
+<div id="startScreen" class="screen active">
+    <h1>🎤 שעשועון נוסטלגיה</h1>
+    <p>מילים של פעם • זיכרונות של פעם</p>
+    <button onclick="start()">▶ התחלה</button>
 </div>
 
+<!-- משחק -->
+<div id="gameScreen" class="screen">
+
 <div class="scoreboard">
-🏆 קבוצה A: <span id="a">0</span> |
-🏆 קבוצה B: <span id="b">0</span>
+🏆 קבוצה A: <span id="scoreA">0</span> |
+🏆 קבוצה B: <span id="scoreB">0</span>
 </div>
 
 <div id="timer">⏱️ 10</div>
 
-<div class="card">
+<div class="card" id="card">
     <div class="word" id="word"></div>
     <div class="meaning" id="meaning"></div>
 
-    <button class="show" onclick="showAnswer()">הצג פירוש</button>
-    <button class="correct" onclick="score('A')">קבוצה A צודקת</button>
-    <button class="wrong" onclick="score('B')">קבוצה B צודקת</button>
+    <button class="show" onclick="showMeaning()">הצג פירוש</button>
+    <button class="aBtn" onclick="score('A')">A צודקת</button>
+    <button class="bBtn" onclick="score('B')">B צודקת</button>
     <button class="next" onclick="next()">שאלה הבאה ➡</button>
 </div>
 
 <div id="nostalgia"></div>
 
+</div>
+
+<!-- סוף -->
+<div id="endScreen" class="screen">
+    <h1>🏁 סיום המשחק</h1>
+    <h2 id="winner"></h2>
+</div>
+
 <script>
 
-const data=[
+const data = [
 ["חנטריש","שטויות"],
 ["פוילישטיק","תעלול"],
 ["סמטוחה","בלגן"],
@@ -159,11 +179,12 @@ const data=[
 let i=0;
 let scoreA=0;
 let scoreB=0;
-let time=10;
-let timer;
+let timer=10;
+let t;
 
-function startGame(){
-    document.getElementById("startScreen").style.display="none";
+function start(){
+    document.getElementById("startScreen").classList.remove("active");
+    document.getElementById("gameScreen").classList.add("active");
     render();
     startTimer();
 }
@@ -173,57 +194,54 @@ function render(){
     document.getElementById("meaning").innerText=data[i][1];
     document.getElementById("meaning").style.display="none";
 
-    if(i%5===0 && i!==0){
+    if(i>0 && i%5===0){
         document.getElementById("nostalgia").style.display="block";
         document.getElementById("nostalgia").innerHTML=
-        "📻 נוסטלגיה: רדיו טרנזיסטור • טלפון חוגה • סוסיתא • פטיפון<br><br>" +
-        "💛 אם זיהית את זה בלי לחשוב – גדלת בעידן קסום!";
+        "📻 רדיו • ☎ טלפון חוגה • 🚗 סוסיתא • 📺 שחור לבן • 💿 פטיפון<br><br>" +
+        "💛 אם זיהית את זה – כנראה גדלת בעידן קסום";
     } else {
         document.getElementById("nostalgia").style.display="none";
     }
 }
 
 function next(){
-    i=(i+1)%data.length;
+    i++;
+    if(i>=data.length){
+        endGame();
+        return;
+    }
     resetTimer();
     render();
 }
 
-function showAnswer(){
+function showMeaning(){
     document.getElementById("meaning").style.display="block";
-    correctAnim();
 }
 
 function score(team){
     if(team==="A"){
         scoreA++;
-        document.getElementById("a").innerText=scoreA;
+        document.getElementById("scoreA").innerText=scoreA;
     } else {
         scoreB++;
-        document.getElementById("b").innerText=scoreB;
+        document.getElementById("scoreB").innerText=scoreB;
     }
     confetti();
-    correctAnim();
-}
-
-function correctAnim(){
-    document.querySelector(".card").style.border="5px solid green";
-    setTimeout(()=>document.querySelector(".card").style.border="none",800);
 }
 
 function startTimer(){
-    timer=setInterval(()=>{
-        time--;
-        document.getElementById("timer").innerText="⏱️ "+time;
+    t=setInterval(()=>{
+        timer--;
+        document.getElementById("timer").innerText="⏱️ "+timer;
 
-        if(time<=0){
+        if(timer<=0){
             next();
         }
     },1000);
 }
 
 function resetTimer(){
-    time=10;
+    timer=10;
     document.getElementById("timer").innerText="⏱️ 10";
 }
 
@@ -236,6 +254,17 @@ function confetti(){
         document.body.appendChild(c);
         setTimeout(()=>c.remove(),3000);
     }
+}
+
+function endGame(){
+    document.getElementById("gameScreen").classList.remove("active");
+    document.getElementById("endScreen").classList.add("active");
+
+    let winner="תיקו!";
+    if(scoreA>scoreB) winner="🏆 קבוצה A מנצחת!";
+    if(scoreB>scoreA) winner="🏆 קבוצה B מנצחת!";
+
+    document.getElementById("winner").innerText=winner;
 }
 
 render();
