@@ -2,35 +2,39 @@
 <html lang="he">
 <head>
 <meta charset="UTF-8">
-<title>משחק נוסטלגי - מילים</title>
+<title>משחק מילים נוסטלגי</title>
 
 <style>
 body {
     font-family: Arial;
     direction: rtl;
-    background: #f6f1e7;
+    background: #f4efe6;
     text-align: center;
     margin: 0;
     padding: 0;
 }
 
 .container {
-    max-width: 700px;
+    max-width: 750px;
     margin: auto;
     padding: 30px;
 }
 
+h1 {
+    margin-bottom: 20px;
+}
+
 .card {
     background: white;
-    padding: 30px;
+    padding: 35px;
     border-radius: 20px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    transition: opacity 0.4s ease;
     min-height: 200px;
+    transition: opacity 0.3s ease;
 }
 
 .word {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: bold;
     margin-bottom: 20px;
 }
@@ -44,16 +48,16 @@ body {
 
 button {
     margin: 10px;
-    padding: 12px 20px;
+    padding: 12px 18px;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
 }
 
-.next { background: #4CAF50; color: white; }
-.prev { background: #2196F3; color: white; }
-.show { background: #FF9800; color: white; }
+.next { background:#4CAF50; color:white; }
+.prev { background:#2196F3; color:white; }
+.show { background:#FF9800; color:white; }
 
 .fade {
     opacity: 0;
@@ -64,18 +68,18 @@ button {
 <body>
 
 <div class="container">
-    <h1>🎲 משחק מילים נוסטלגי</h1>
+<h1>🎲 משחק מילים נוסטלגי</h1>
 
-    <div id="card" class="card">
-        <div id="word" class="word"></div>
-        <div id="meaning" class="meaning"></div>
-    </div>
+<div id="card" class="card">
+    <div id="word" class="word"></div>
+    <div id="meaning" class="meaning"></div>
+</div>
 
-    <div>
-        <button class="prev" onclick="prevWord()">⬅ הקודם</button>
-        <button class="show" onclick="toggleMeaning()">הצג פירוש</button>
-        <button class="next" onclick="nextWord()">הבא ➡</button>
-    </div>
+<div>
+    <button class="prev" onclick="prevWord()">⬅ הקודם</button>
+    <button class="show" onclick="toggleMeaning()">הצג פירוש</button>
+    <button class="next" onclick="nextWord()">הבא ➡</button>
+</div>
 </div>
 
 <script>
@@ -92,34 +96,34 @@ const words = [
 {w:"צָ'אלַמֶר", m:"אדם מגושם או חסר תחכום"},
 {w:"שָׁאפָה", m:"יפה מאוד! כל הכבוד!"},
 {w:"חַנְטָרִישׁ", m:"שטויות, דברי הבל"},
-{w:"פּוֹיְילִישְׁטִיק", m:"תעלול או טריק"},
-{w:"בּוּבֶּה מַיְיסֶעס", m:"סיפורי סבתא"},
-{w:"נֶבֶךְ", m:"מסכן"},
-{w:"קְלֶפְּטָה", m:"אישה נרגנת"},
+{w:"פּוֹיְילִישְׁטִיק", m:"תעלול או טריק מתוחכם"},
+{w:"בּוּבֶּה מַיְיסֶעס", m:"סיפורי סבתא, סיפורים מופרכים"},
+{w:"נֶבֶךְ", m:"מסכן, מעורר רחמים"},
+{w:"קְלֶפְּטָה", m:"אישה נרגנת או קולנית"},
 {w:"סַמְטוּכָה", m:"בלגן גדול"},
 {w:"חוֹלֵירָה", m:"אדם מעצבן"},
-{w:"בָּרוּךְ", m:"הסתבכות"},
-{w:"זַבֶּנְג", m:"מכה פתאומית"},
-{w:"סַבָּבָּה", m:"מצוין"},
+{w:"בָּרוּךְ", m:"הסתבכות או צרה"},
+{w:"זַבֶּנְג", m:"מכה או אירוע פתאומי"},
+{w:"סַבָּבָּה", m:"מצוין, הכל בסדר"},
 {w:"פְּרָאיֶיר", m:"אדם שקל לנצל אותו"},
 {w:"לַעֲשׂוֹת רוּחַ", m:"להשוויץ"},
-{w:"הִתְבַּרְבֵּר", m:"הסתבך"},
-{w:"יָאלְלָה", m:"קדימה"},
-{w:"לַפְלֵף", m:"חסר ביטחון"},
-{w:"פַּדִּיחָה", m:"מבוכה"},
-{w:"חַרְטְטָן", m:"ממציא סיפורים"},
-{w:"קִשְׁקוּשׁ בַּלָּבוּשׁ", m:"שטויות"},
-{w:"בּוֹמְבָּה", m:"מרשים"},
-{w:"דָּאוִין", m:"השווצה"},
-{w:"חַאפְלָה", m:"מסיבה"},
+{w:"הִתְבַּרְבֵּר", m:"הלך לאיבוד או הסתבך"},
+{w:"יָאלְלָה", m:"קדימה!"},
+{w:"לַפְלֵף", m:"אדם חסר ביטחון"},
+{w:"פַּדִּיחָה", m:"מבוכה גדולה"},
+{w:"חַרְטְטָן", m:"מי שממציא סיפורים"},
+{w:"קִשְׁקוּשׁ בַּלָּבוּשׁ", m:"שטויות גמורות"},
+{w:"בּוֹמְבָּה", m:"גדול, מרשים"},
+{w:"דָּאוִין", m:"להשוויץ ולעשות רושם"},
+{w:"חַאפְלָה", m:"מסיבה שמחה"},
 {w:"וָאזוּוָאז", m:"פטפטן"},
 {w:"טַמְבֶּל", m:"טיפש"},
-{w:"בַּטְלָן", m:"לא עובד"},
-{w:"שְׁנוֹרֶר", m:"מבקש טובות"},
-{w:"שְׁמוֹנְצֶס", m:"שטויות"},
-{w:"שַׁיְיגֶץ", m:"שובב"},
-{w:"מֶענְטְשׁ", m:"אדם טוב"},
-{w:"אוֹי וֵוי", m:"קריאת צער"}
+{w:"בַּטְלָן", m:"מי שלא אוהב לעבוד"},
+{w:"שְׁנוֹרֶר", m:"אדם שמבקש טובות"},
+{w:"שְׁמוֹנְצֶס", m:"שטויות או קישוטים מיותרים"},
+{w:"שַׁיְיגֶץ", m:"בחור שובב"},
+{w:"מֶענְטְשׁ", m:"אדם ישר וטוב לב"},
+{w:"אוֹי וֵוי", m:"קריאת צער או הפתעה"}
 ];
 
 let index = 0;
@@ -149,13 +153,13 @@ function toggleMeaning() {
     m.style.display = (m.style.display === "none") ? "block" : "none";
 }
 
-function fade(callback) {
+function fade(cb) {
     const card = document.getElementById("card");
     card.classList.add("fade");
     setTimeout(() => {
-        callback();
+        cb();
         card.classList.remove("fade");
-    }, 300);
+    }, 250);
 }
 
 render();
